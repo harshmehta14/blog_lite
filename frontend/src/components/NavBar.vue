@@ -8,6 +8,9 @@
           <router-link class="nav-link active " to="/">Something</router-link>
         </li>
         <li class="nav-item mx-2">
+          <router-link class="nav-link active " to="/profile">Profile</router-link>
+        </li>
+        <li class="nav-item mx-2">
           <!-- <a class="nav-link active" aria-current="page" href="#">Home</a> -->
           <router-link class="btn btn-success " to="/login">Log In</router-link>
         </li>   
