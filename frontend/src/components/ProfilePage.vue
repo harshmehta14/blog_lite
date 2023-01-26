@@ -22,20 +22,25 @@
                 </div>
                 <div class="col-md-2 mx-2 ">                   
                     <div class="card my-3 mx-2 bg-light" style="width: 13rem;">
-                        <div class="card-body">
+                        <router-link to="/friends" style="text-decoration: none; color: inherit;">
+                            <div class="card-body">
                             <h3 class="card-title text-center text-muted">Followed by</h3>
                             <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
                             <h4 class="card-title text-center">194</h4>                          
                         </div>
+
+                        </router-link>
                         </div>
                 </div>
                 <div class="col-md-2 mx-2">                   
                     <div class="card my-3 mx-2 bg-light" style="width: 13rem;">
+                        <router-link to="/friends" style="text-decoration: none; color: inherit;">
                         <div class="card-body">
                             <h3 class="card-title text-center text-muted">Following</h3>
                             <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
                             <h4 class="card-title text-center">205</h4>                          
                         </div>
+                    </router-link>
                         </div>
                 </div>
                 <!-- <div class="col-md-2 mx-2">                   
@@ -75,8 +80,7 @@
         </div>
     </div>
 
-    <h1 class="display-3 text-center">My Post</h1>
-        
+    
 
 
     </div>
