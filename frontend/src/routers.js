@@ -2,9 +2,8 @@ import {createRouter, createWebHistory} from 'vue-router'
 import HomePage from './components/HomePage'
 import LoginPage from './components/LoginPage'
 import SignupPage from './components/SignupPage.vue'
-import ProfilePage from './components/ProfilePage.vue'
+import ProfilePage from './components/MyProfilePage.vue'
 import FriendsPage from './components/FriendsPage.vue'
-
 import TestPage from './components/TestPage.vue'
 import PostPage from './components/WritePostPage.vue'
 import MyPostPage from './components/MyPostPage.vue'
@@ -26,8 +25,8 @@ const routes = [
         component:SignupPage  
     },
     {
-        path:'/profile',
-        name:'profile',
+        path:'/myprofile',
+        name:'myprofile',
         component:ProfilePage  
     },
     {

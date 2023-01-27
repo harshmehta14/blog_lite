@@ -1,5 +1,5 @@
 <template>
-  <div class="login-signup">
+  <div>
     <NavBar/>
      
       <div class="container d-flex justify-content-center">
@@ -11,11 +11,11 @@
               <h1>Create an account</h1>
             </div>
              <div v-show="flag" class="alert alert-danger my-3 mx-3 text-center" role="alert">
-              Password should more than 8 characters
+              Username or Email is already taken.
             </div>
             <div class="row">
-              <form @submit.prevent="login_token">
-                <div class="row">
+              <form @submit.prevent="signup_backend">
+                <!-- <div class="row">
                   <div class="col-6 ">
                       <div class="form-floating mb-3">
                         <input  v-model="fname" type="text" class="form-control" id="floatingInput" placeholder="fname" required>
@@ -28,22 +28,29 @@
                         <label for="floatingInput">Last Name</label>
                        </div>
                   </div>
+                </div> -->
+                <div class="form-floating mb-3">
+                  <input  v-model="username" type="text" class="form-control" placeholder="username" required/>
+                  <label for="floatingInput">Username</label>
                 </div>
                 <div class="form-floating mb-3">
-                  <input  v-model="email" type="email" class="form-control" id="floatingInput" placeholder="Email" required>
+                  <input  v-model="email" type="email" class="form-control" placeholder="Email" required/>
                   <label for="floatingInput">Email address*</label>
                 </div>
                 <div class="form-floating">
-                  <input v-model="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                  <input v-model="password" type="password" class="form-control" minlength="8" placeholder="Password" required/>
                   <label for="floatingPassword">Password*</label><br>
                 </div>
-                <button type="button" class="btn btn-primary w-100 btn-md" >Create account</button>
+                <button  class="btn btn-primary w-100 btn-md" >Create account</button>
               </form>
             </div>
             <div class="row text-center">
               <router-link to="/login">Already have an account? Log in here</router-link>
             </div>
-              
+            <!-- <p>username: {{username}}</p>
+            <p>email: {{email}}</p>
+            <p>password: {{password}}</p>
+               -->
           </div>
 
         </div>
@@ -59,16 +66,50 @@
   </template>
 
 <script>
-export default {
+export default{
   data(){
-          return{
-              email:"",
-              password:"",
-              lname:"",
-              fname:"",
-              flag:false
-          }      
-      },
+      return{
+          email:"",
+          password:"",
+          username:"",
+          // lname:"",
+          // fname:"",
+          flag:false
+      }      
+  },
+  methods : {
+          signup_backend() {  
+          fetch(
+              "http://127.0.0.1:5000/signup",
+              {
+              method: "POST",
+              headers:{
+                  "Content-Type":"application/json",
+                  "Access-Control-Allow-Origin": "*",
+              },
+              body: JSON.stringify({
+              "username":this.username,
+              "email": this.email,
+              "password": this.password
+          }),
+              }
+          ).then(function(response) {
+              return response.json()
+          }).then((rdata)=> {
+              console.log(rdata)
+              if (rdata.signup=="success"){
+                this.$router.push({name:'home'})
+              }
+              else{
+                this.flag=true
+              }
+              
+          }).catch(function(error){
+              this.flag=true
+              console.log('error',error)
+          });
+      }
+  }
 }
 </script>
 

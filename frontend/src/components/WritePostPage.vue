@@ -2,7 +2,7 @@
     <div>
         <NavBar/>
         <div class="container my-3">
-            <form >
+            <form @submit.prevent="createpost">
                 <div class="title my-3 shadow p-3 mb-5 bg-body rounded">
                     <textarea type="text" class="form-control" rows="1" id="title" placeholder="Type in title for the Post here..."  v-model="title"  required />
                 </div>
@@ -28,7 +28,7 @@
                     Please enter all the field before posting
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-success btn-lg" @click="checkallfield">Post <i class="bi bi-check2-circle"></i></button>
+                    <button class="btn btn-success btn-lg" @click="checkallfield">Post <i class="bi bi-check2-circle"></i></button>
 
                 </div>
                 
@@ -78,9 +78,35 @@ methods:{
             reader.readAsDataURL(file[0])
             this.$emit('input',file[0])
         }
-
-
+    },
+    createpost(){
+        console.log("IN here")
+          fetch(
+              "http://127.0.0.1:5000/createpost",
+              {
+              method: "POST",
+              headers:{
+                  "Content-Type":"application/json",
+                  "Access-Control-Allow-Origin": "*",
+              },
+              body: JSON.stringify({
+              "title":this.title,
+              "description": this.description,
+              "links": this.additionallinks,
+              "username":"test123"
+            }),
+            }).then(function(response) {
+              return response.json()
+            }).then((rdata) => {
+                console.log(rdata)
+                this.$router.push({name:'home'})
+            }).catch(function(error){
+                console.log('error',error)
+            });
     }
+
+
+
 }
 }
 </script>

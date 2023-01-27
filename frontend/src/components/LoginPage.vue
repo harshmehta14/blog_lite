@@ -23,7 +23,7 @@
                   <input v-model="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
                   <label for="floatingPassword">Password</label><br>
                 </div>
-                <button type="button" class="btn btn-primary w-100 btn-md" >Login</button>
+                <button class="btn btn-primary w-100 btn-md" >Login</button>
               </form>
             </div>
             <div class="row text-center">
@@ -34,14 +34,7 @@
 
         </div>
       </div>
-
   </div>
-
-  
-  
-  <!-- <p>email: {{email}}</p>
-  <p>password: {{password}}</p>
-  <p>msg:{{msg}}</p> -->
   </template>
   
   <script>
@@ -51,43 +44,53 @@
           return{
               email:"",
               password:"",
-              msg:"",
-              welcome:"",
               flag:false
           }      
       },
-  //     methods : {
-  //         login_token() {     
-  //             fetch(
-  //                 "http://127.0.0.1:5000/login",
-  //                 {
-  //                 method: "POST",
-  //                 headers:{
-  //                     "Content-Type":"application/json",
-  //                     "Access-Control-Allow-Origin": "*",
-  //                 },
-  //                 body: JSON.stringify({
-  //                 "email": this.email,
-  //                 "password": this.password
-  //             }),
-  //                 }
-  //             ).then(res =>{
-  //                 return res.json();
+      methods : {
+          login_token() {     
+              fetch(
+                  "http://127.0.0.1:5000/login",
+                  {
+                  method: "POST",
+                  headers:{
+                      "Content-Type":"application/json",
+                      "Access-Control-Allow-Origin": "*",
+                  },
+                  body: JSON.stringify({
+                  "email": this.email,
+                  "password": this.password
+              }),
+                  }
+                  ).then(function(response) {
+                      return response.json()
+                  }).then((rdata)=> {
+                      console.log(rdata);
+                      if (rdata.login == "success")
+                        this.$router.push({name:'home'})
+                      else{
+                        this.flag = true;
+                      }
+                  }).catch(function(error){
+                      console.log('error',error)
+                  });
+              // ).then(res =>{
+              //     return res.json();
                   
-  //             }).then(data=> {
-  //                 if(data.token){
-  //                     localStorage.setItem('token', data.token);
-  //                     this.welcome="Welcome "+data.user
-  //                     localStorage.setItem('user', data.user);
-  //                 }
-  //                 else{
-  //                     this.msg= data.data;
-  //                 }
-  //                 }).catch(function(error){
-  //                 console.log('error',error)
-  //             });
-  //         }
-  //     }
+              // }).then(data=> {
+              //     if(data.token){
+              //         localStorage.setItem('token', data.token);
+              //         this.welcome="Welcome "+data.user
+              //         localStorage.setItem('user', data.user);
+              //     }
+              //     else{
+              //         this.msg= data.data;
+              //     }
+              //     }).catch(function(error){
+              //     console.log('error',error)
+              // });
+          }
+      }
   }
   </script>
   

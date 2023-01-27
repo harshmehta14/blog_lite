@@ -53,7 +53,7 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <!-- <p class="dropdown-item">Welcome </p>
                 <div class="dropdown-divider"></div> -->
-                <li><router-link class="dropdown-item" to="/profile"><i class="bi bi-person-circle"></i> My Profile</router-link></li>
+                <li><router-link class="dropdown-item" to="/myprofile"><i class="bi bi-person-circle"></i> My Profile</router-link></li>
                 <li><router-link class="dropdown-item" to="/myposts"><i class="bi bi-card-text" fill="red"></i> My Posts</router-link></li>
                 <div class="dropdown-divider"></div>
                 <li><router-link class="dropdown-item" to="/"><i class="bi bi-box-arrow-right"></i> Logout</router-link></li>
@@ -89,7 +89,7 @@
 export default {
   data(){
     return{
-          login:false,
+          login:true,
     }
   }
 

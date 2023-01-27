@@ -8,15 +8,13 @@
                         <div class="card-body">
                             <span>
                                 <h3 class="card-title text-center text-muted"> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
-                                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
-                                    </svg> Total Posts
+                                     Total Posts
                                 </h3>
                                 
                             </span>
                          
                             <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-                            <h4 class="card-title text-center">10</h4>                          
+                            <h4 class="card-title text-center">{{ total_posts }}</h4>                          
                         </div>
                         </div>
                 </div>
@@ -24,9 +22,9 @@
                     <div class="card my-3 mx-2 bg-light" style="width: 13rem;">
                         <router-link to="/friends" style="text-decoration: none; color: inherit;">
                             <div class="card-body">
-                            <h3 class="card-title text-center text-muted">Followed by</h3>
+                            <h3 class="card-title text-center text-muted">Followers</h3>
                             <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-                            <h4 class="card-title text-center">194</h4>                          
+                            <h4 class="card-title text-center">{{followers}}</h4>                          
                         </div>
 
                         </router-link>
@@ -38,7 +36,7 @@
                         <div class="card-body">
                             <h3 class="card-title text-center text-muted">Following</h3>
                             <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-                            <h4 class="card-title text-center">205</h4>                          
+                            <h4 class="card-title text-center">{{following}}</h4>                          
                         </div>
                     </router-link>
                         </div>
@@ -62,15 +60,15 @@
                 </div>
                 <div class="col-sm-7"> 
                     <div class="card-body">
-                        <p class="card-title"><span style="font-weight:bold">First Name: </span> Harsh</p>
+                        <!-- <p class="card-title"><span style="font-weight:bold">First Name: </span> Harsh</p>
+                        <hr> -->
+                        <!-- <p class="card-title"><span style="font-weight:bold">Last Name:  </span> Mehta</p>
+                        <hr> -->
+                        <p class="card-title"><span style="font-weight:bold">Username: </span> {{profile_username}}</p>
                         <hr>
-                        <p class="card-title"><span style="font-weight:bold">Last Name:  </span> Mehta</p>
+                        <p class="card-title"><span style="font-weight:bold">Email: </span> {{email}}</p>
                         <hr>
-                        <p class="card-title"><span style="font-weight:bold">Username: </span> harshmehta14</p>
-                        <hr>
-                        <p class="card-title"><span style="font-weight:bold">Email: </span> test@test.com</p>
-                        <hr>
-                        <p class="card-title"><span style="font-weight:bold">Last Login: </span>12th Sep 2022</p>
+                        <p class="card-title"><span style="font-weight:bold">Last Login: </span>{{last_login}}</p>
                         <hr>
                         <!-- <p class="card-text">Suresh Dasari is a founder and technical lead developer in tutlane.</p> -->
                         <!-- <a href="#" class="btn btn-primary">View Profile</a> -->
@@ -89,6 +87,59 @@
 
 <script>
 export default {
+    data(){
+        return{
+            username:"test",
+            total_posts:0,
+            followers:0,
+            following:0,
+            profile_username:"",
+            email:"",
+            last_login:"",
+        }
+    },
+    methods:{
+        profile() {
+        console.log("Get profile");
+          fetch(
+              "http://127.0.0.1:5000/profile?username="+this.username,
+              {
+              method: "GET",
+              headers:{
+                  "Content-Type":"application/json",
+                  "Access-Control-Allow-Origin": "*",
+              },
+            //   body: JSON.stringify({
+            //   "title":this.title,
+            //   "description": this.description,
+            //   "links": this.additionallinks,
+            //   "username":"test123"
+            // }),
+            }).then(function(response) {
+              return response.json()
+            }).then((user_data) => { 
+                if(user_data.profile){
+                this.total_posts=user_data.total_posts;
+                this.followers=user_data.followers.length;
+                this.following=user_data.following.length;
+                this.profile_username=user_data.username;
+                this.email=user_data.email;
+                this.last_login=user_data.last_login;
+                }
+                else{
+                    console.log(user_data)
+                }
+                // this.$router.push({name:'home'})
+            }).catch(function(error){
+                console.log('error',error)
+            });
+    }
+
+    },
+    beforeMount(){
+        this.profile()
+
+    }
 
 }
 </script>
