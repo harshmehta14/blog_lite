@@ -6,6 +6,9 @@ import ProfilePage from './components/MyProfilePage.vue'
 import FriendsPage from './components/FriendsPage.vue'
 import PostPage from './components/WritePostPage.vue'
 import MyPostPage from './components/MyPostPage.vue'
+import SearchPage from './components/SearchPage.vue'
+import UserProfile from './components/UserProfile.vue'
+import EditPost from './components/EditPost.vue'
 
 const routes = [
     {
@@ -43,6 +46,21 @@ const routes = [
         name:'mypost',
         component:MyPostPage  
     },
+    {
+        path:'/search',
+        name:'search',
+        component:SearchPage
+    },
+    {
+        path:'/userprofile',
+        name:'userprofile',
+        component:UserProfile
+    },
+    {
+        path:'/editpost',
+        name:'editpost',
+        component:EditPost
+    }
     // {
     //     path:'/hello',
     //     name:'Hello',

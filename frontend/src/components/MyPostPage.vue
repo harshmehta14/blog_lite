@@ -13,11 +13,34 @@
                 <div class="card my-3 " style="min-height:350px;">
                 <img src="../assets/download.png" class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">{{blog.title}}</h5>
+
+                  <div class="row align-items-center">
+                    <div class="col-md-8">
+                      <h5 class="card-title">{{blog.title}}</h5>
+                    </div>
+                    <div class="col-md-4">
+                    <button :class="{'btn btn-success btn-sm ': !blog.private_public,
+                                      'btn btn-primary btn-sm': blog.private_public,
+                                    }">
+                                    {{ blog.private_public==false ? "Public" :"Private"}}</button>
+                    </div>
+                  </div>
+                    
                     <p class="card-text">{{ blog.description.slice(0, 100) }}</p>
-                    <p class="card-text text-muted">{{ blog.posted_on }}</p>
+                    <div class="row">
+                      <div class="col-md-8">
+                        <p class="card-text text-muted">{{ blog.posted_on.slice(0,-7) }}</p>
+
+                      </div>
+                      <div class="col-md-4">
+                        <p>{{ blog.likes }} &nbsp; <i class="bi bi-hand-thumbs-up icon-magenta text-primary"></i></p>
+                      </div>
+                    </div>
+                  
                     <div class="footer">
-                    <a href="#" class="btn btn-info mx-4"><i class="bi bi-pencil-fill"></i> Edit</a>
+                      <router-link to="editpost" class="btn btn-info mx-4">
+                        <i class="bi bi-pencil-fill"></i> Edit
+                      </router-link>
                     <a href="#" class="btn btn-outline-danger" @click="Delete_userpost(blog.blog_id)"><i class="bi bi-trash3-fill"></i> Delete</a>
                     </div>
                     
@@ -70,6 +93,7 @@ export default {
           console.log('error',error)
       });
     }, 
+
     Delete_userpost(blog_id){
       console.log(blog_id)
       fetch(
@@ -97,8 +121,6 @@ export default {
           //   this.empty_post=false
           //   myblogs.forEach(item => this.myblogs.push(item));
           // }
-        
-          
       }).catch(function(error){
           console.log('error',error)
       });

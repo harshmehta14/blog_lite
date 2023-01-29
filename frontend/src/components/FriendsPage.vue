@@ -1,6 +1,6 @@
 <template>
     <div class="div">
-    <NavBar/>
+    <NavBar  v-bind:login=true />
     <div class="container text-center  mt-5 mb-5">
             <ul class="nav nav-tabs justify-content-center">
                 <li class="nav-item">
@@ -68,9 +68,9 @@
                 <tbody>
                 <tr class="table" v-for="(item,index) in followinglist" :key="index">
                     <td  class="text-center" scope="row">{{ index+1 }}</td>
-                    <td colspan="5" class="fs-5 text-center">@{{item}}</td>
+                    <td colspan="5" class="fs-5 text-center">@{{item.username}}</td>
                     <td class="text-center">
-                        <button  class="btn btn-danger mt-1" @click="following_unfollow(item)">Unfollow</button>                      
+                        <button  class="btn btn-danger mt-1" @click="following_unfollow(item.username)">Unfollow</button>                      
                     </td>
                 </tr> 
                 </tbody>
@@ -86,7 +86,6 @@
 </template>
 
 <script>
-
 export default {
     data(){
         return{
@@ -109,7 +108,7 @@ export default {
         follow_user(follow_username){
             console.log(follow_username)
             fetch(
-            "http://127.0.0.1:5000/follow_user?follow_username="+this.follow_username,
+            "http://127.0.0.1:5000/follow_user?follow_username="+follow_username,
             {
             method: "GET",
             headers:{
@@ -117,13 +116,13 @@ export default {
                 "Content-Type":"application/json",
                 "Access-Control-Allow-Origin": "*",
             },
-        }).then(function(response) {
-            return response.json()
-        }).then(() => {
-            this.$router.go()
-        }).catch(function(error){
-            console.log('error',error)
-        });
+            }).then(function(response) {
+                return response.json()
+            }).then(() => {
+                this.$router.go()
+            }).catch(function(error){
+                console.log('error',error)
+            });
 
         },
         following_unfollow(unfollow_username){
@@ -145,6 +144,7 @@ export default {
             console.log('error',error)
         });
         },
+        
         changefollower: function() {
             this.follower=false;
         },
@@ -164,6 +164,7 @@ export default {
         }).then(function(response) {
             return response.json()
         }).then((friendslist) => {
+            console.log(friendslist)
             // friendslist.followers.forEach(item => this.followerslist.push(item));
             friendslist.followers.forEach(item => this.followerslist.push(item));
             friendslist.following.forEach(item => this.followinglist.push(item));

@@ -24,25 +24,30 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand me-5" href="/"><h6 class="display-6">Project</h6></a>
-          <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
+          
+          <!-- <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="username">
+             <router-link to="/search/"><button class="btn btn-outline-success" >Search</button></router-link>   
+          </form> -->
+
+   
+          
           <button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse  " id="navbarSupportedContent">
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
-              <!-- <li class="nav-item px-2">
-                <router-link to="/"  class="nav-link active">Home</router-link>
-              </li> -->
+              <li class="nav-item px-2">
+                <router-link to="/search"  class="nav-link active"><i class="bi bi-search"></i> Search</router-link>
+              </li>
               <!-- <li class="nav-item px-2" >
                 <router-link to="/myposts"  class="nav-link active">My Posts</router-link>
               </li>
               <li class="nav-item px-2" >
                 <router-link to="/profile"  class="nav-link active">My Profile</router-link>
               </li> -->
-              <li class="nav-item mx-2 my-1" v-if="login">
+              
+              <li class="nav-item mx-2 my-1" >
                 <router-link to="/createpost" class="btn btn-primary" >Post Now</router-link>
               </li>
               <li>
@@ -90,6 +95,7 @@ export default {
   props:['login'],
   data(){
     return{
+      username:"harsh",
           
     }
   },

@@ -101,7 +101,7 @@ export default {
         profile() {
         console.log("Get profile");
           fetch(
-              "http://127.0.0.1:5000/profile?username="+this.username,
+              "http://127.0.0.1:5000/profile",
               {
               method: "GET",
               headers:{
@@ -120,8 +120,8 @@ export default {
             }).then((user_data) => { 
                 if(user_data.profile){
                 this.total_posts=user_data.total_posts;
-                this.followers=user_data.followers.length;
-                this.following=user_data.following.length;
+                // this.followers=user_data.followers.length;
+                // this.following=user_data.following.length;
                 this.profile_username=user_data.username;
                 this.email=user_data.email;
                 this.last_login=user_data.last_login;
