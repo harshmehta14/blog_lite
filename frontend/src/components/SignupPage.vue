@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NavBar/>
+    <NavBar v-bind:login=false />
      
       <div class="container d-flex justify-content-center">
         <div class="row bigbox ">
@@ -10,8 +10,8 @@
             <div class="row text-center mt-5">
               <h1>Create an account</h1>
             </div>
-             <div v-show="flag" class="alert alert-danger my-3 mx-3 text-center" role="alert">
-              Username or Email is already taken.
+             <div v-show="flag" class="alert alert-danger  my-3 mx-3 text-center" style="height:auto" id="signup_error" role="alert">
+              
             </div>
             <div class="row">
               <form @submit.prevent="signup_backend">
@@ -80,7 +80,7 @@ export default{
   methods : {
           signup_backend() {  
           fetch(
-              "http://127.0.0.1:5000/signup",
+              "http://127.0.0.1:5000/register",
               {
               method: "POST",
               headers:{
@@ -95,14 +95,27 @@ export default{
               }
           ).then(function(response) {
               return response.json()
-          }).then((rdata)=> {
-              console.log(rdata)
-              if (rdata.signup=="success"){
-                this.$router.push({name:'home'})
+          }).then((res)=> {
+            console.log(res)
+              console.log(res.meta.code)
+              if (res.meta.code == 200){
+                console.log("Successs");
+                this.$router.push({name:'login'})
               }
-              else{
-                this.flag=true
+              if(res.response.errors){
+                this.flag =true
+                var error_msg = document.getElementById("signup_error");
+                for (var i=0;i<res.response.errors.length;i++){
+                  error_msg.textContent +=  "" +res.response.errors[i] + "" ;
+                }
+                console.log(res.response.errors[0])
               }
+              // if (res.signup=="success"){
+              //   this.$router.push({name:'home'})
+              // }
+              // else{
+              //   this.flag=true
+              // }
               
           }).catch(function(error){
               this.flag=true

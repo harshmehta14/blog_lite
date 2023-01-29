@@ -1,6 +1,6 @@
 <template>
   <div class="login-signup">
-    <NavBar/>
+    <NavBar  v-bind:login=false />
      
       <div class="container d-flex justify-content-center">
         <div class="row bigbox ">
@@ -50,7 +50,7 @@
       methods : {
           login_token() {     
               fetch(
-                  "http://127.0.0.1:5000/login",
+                  "http://127.0.0.1:5000/login?include_auth_token",
                   {
                   method: "POST",
                   headers:{
@@ -64,13 +64,22 @@
                   }
                   ).then(function(response) {
                       return response.json()
-                  }).then((rdata)=> {
-                      console.log(rdata);
-                      if (rdata.login == "success")
+                  }).then((res)=> {
+                      console.log(res);
+                      if (res.meta.code == 200){
+                        console.log(res.response.user.authentication_token);
+                        localStorage.setItem('auth_token', res.response.user.authentication_token);
                         this.$router.push({name:'home'})
-                      else{
-                        this.flag = true;
                       }
+                      if(res.response.errors){
+                        this.flag =true
+                        console.log(res.response.errors[0])
+                      }
+                      // if (rdata.login == "success")
+                      //   this.$router.push({name:'home'})
+                      // else{
+                      //   this.flag = true;
+                      // }
                   }).catch(function(error){
                       console.log('error',error)
                   });

@@ -90,7 +90,7 @@
 export default {
     data(){
         return{
-            username:"test",
+           
             follower: true,
             // followerslist:[
             //     {name:"Harsh",type:"Following"},
@@ -109,10 +109,11 @@ export default {
         follow_user(follow_username){
             console.log(follow_username)
             fetch(
-            "http://127.0.0.1:5000/follow_user?username="+this.username+"&follow_username="+follow_username,
+            "http://127.0.0.1:5000/follow_user?follow_username="+this.follow_username,
             {
             method: "GET",
             headers:{
+                "Authentication-token":localStorage.getItem('auth_token'),
                 "Content-Type":"application/json",
                 "Access-Control-Allow-Origin": "*",
             },
@@ -128,10 +129,11 @@ export default {
         following_unfollow(unfollow_username){
             
             fetch(
-            "http://127.0.0.1:5000/unfollow_user?username="+this.username+"&unfollow_username="+unfollow_username,
+            "http://127.0.0.1:5000/unfollow_user?unfollow_username="+unfollow_username,
             {
             method: "GET",
             headers:{
+                "Authentication-Token":localStorage.getItem("auth_token"),
                 "Content-Type":"application/json",
                 "Access-Control-Allow-Origin": "*",
             },
@@ -151,10 +153,11 @@ export default {
         }, 
         getfriendslist(){
         fetch(
-            "http://127.0.0.1:5000/getfriendslist?username="+this.username,
+            "http://127.0.0.1:5000/getfriendslist",
             {
             method: "GET",
             headers:{
+                "Authentication-token":localStorage.getItem("auth_token"),
                 "Content-Type":"application/json",
                 "Access-Control-Allow-Origin": "*",
             },

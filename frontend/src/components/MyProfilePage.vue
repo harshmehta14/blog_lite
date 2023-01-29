@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavBar/>
+        <NavBar  v-bind:login=true />
         <div class="container-fluid shadow-lg p-3 mb-5 bg-body rounded">
             <div class="row justify-content-center">
                 <div class="col-md-2 mx-2 ">                   
@@ -89,7 +89,6 @@
 export default {
     data(){
         return{
-            username:"test",
             total_posts:0,
             followers:0,
             following:0,
@@ -106,6 +105,7 @@ export default {
               {
               method: "GET",
               headers:{
+                  "Authentication-Token":localStorage.getItem("auth_token"),
                   "Content-Type":"application/json",
                   "Access-Control-Allow-Origin": "*",
               },

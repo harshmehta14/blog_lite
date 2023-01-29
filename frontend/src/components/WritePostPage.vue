@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavBar/>
+        <NavBar  v-bind:login=true />
         <div class="container my-3">
             <form @submit.prevent="createpost">
                 <div class="title my-3 shadow p-3 mb-5 bg-body rounded">
@@ -86,6 +86,7 @@ methods:{
               {
               method: "POST",
               headers:{
+                "Authentication-Token":localStorage.getItem("auth_token"),
                   "Content-Type":"application/json",
                   "Access-Control-Allow-Origin": "*",
               },
@@ -93,7 +94,6 @@ methods:{
               "title":this.title,
               "description": this.description,
               "links": this.additionallinks,
-              "username":"test123"
             }),
             }).then(function(response) {
               return response.json()

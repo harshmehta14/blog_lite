@@ -4,7 +4,6 @@ import LoginPage from './components/LoginPage'
 import SignupPage from './components/SignupPage.vue'
 import ProfilePage from './components/MyProfilePage.vue'
 import FriendsPage from './components/FriendsPage.vue'
-import TestPage from './components/TestPage.vue'
 import PostPage from './components/WritePostPage.vue'
 import MyPostPage from './components/MyPostPage.vue'
 
@@ -33,11 +32,6 @@ const routes = [
         path:'/friends',
         name:'friends',
         component:FriendsPage  
-    },
-    {
-        path:'/test',
-        name:'test',
-        component:TestPage  
     },
     {
         path:'/createpost',

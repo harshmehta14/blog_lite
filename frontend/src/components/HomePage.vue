@@ -70,7 +70,7 @@
      
   </div> -->
 <div class="div">
-<NavBar/>
+<NavBar  v-bind:login=login_flag />
   <div class="container-fluid text-center my-3">
   <div class="row">
 
@@ -136,9 +136,9 @@
               <h4 class="card-subtitle" >{{blog.title}}</h4>
               <p class="card-text mt-2">{{ blog.description.slice(0,100) }}</p>
           
-                <button class="btn btn-light fs-5" >
+                <button class="btn btn-light fs-5" @click="blog_like(blog.blog_id)">
                 {{ blog.likes }} &nbsp; 
-                <i class="bi bi-hand-thumbs-up text-primary" style="font-size: 20px;"></i>
+                <i class="bi bi-hand-thumbs-up icon-magenta text-primary" style="font-size: 20px;"></i>
                 </button>
 
                 
@@ -146,9 +146,7 @@
             </div>
         </li>
       </ul>
-        <!-- <div class="card-footer text-muted">
-          2 days ago
-        </div> -->
+      
       </div>
     
     </div>
@@ -164,15 +162,41 @@
 export default {
  data(){
   return{
-    count:0,
     no_friend:false,
     sort_flag:0, 
-    username:"test",
     user_blogs:[],
     trendingblogs:[],
+    login_flag:false,
+
   }
   },
   methods:{
+    blog_like(blog_id){
+      console.log(blog_id);
+      fetch(
+        "http://127.0.0.1:5000/like_post?blog_id="+blog_id,
+        {
+        method: "GET",
+        headers:{
+            "Authentication-token":localStorage.getItem("auth_token"),
+            "Content-Type":"application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+      }).then(function(response) {
+        return response.json()
+      }).then((res) => {
+        console.log(res);
+        this.$router.go()
+        
+      }).catch(function(error){
+          console.log('error',error)
+      });
+    },
+    check_login(){
+      if (localStorage.getItem('auth_token')){
+        this.login_flag=true
+      }
+    },
     sortposts(flag){
       // console.log(flag)
       if (flag === 1){
@@ -210,19 +234,20 @@ export default {
    
     // },
     getblogs(){
-      // console.log("IN HERE")
       fetch(
-        "http://127.0.0.1:5000/getblogs?username="+this.username,
+        "http://127.0.0.1:5000/getblogs",
         {
         method: "GET",
         headers:{
+            "Authentication-token":localStorage.getItem("auth_token"),
             "Content-Type":"application/json",
             "Access-Control-Allow-Origin": "*",
         },
       }).then(function(response) {
         return response.json()
       }).then((blogspost) => {
-          if (blogspost.blog_empty){
+        console.log(blogspost)
+          if (blogspost.length == 0){
             this.no_friend=true;
           }
           else{
@@ -242,7 +267,7 @@ export default {
       }).then(function(response) {
         return response.json()
       }).then((trendingblogs) => {
-          // console.log(trendingblogs)
+          console.log(trendingblogs)
           trendingblogs.forEach(item => this.trendingblogs.push(item));
       }).catch(function(error){
           console.log('error',error)
@@ -253,6 +278,7 @@ export default {
     beforeMount(){
           this.getblogs()
           this.gettrendingblogs()
+          this.check_login()
         }
 }
 </script>

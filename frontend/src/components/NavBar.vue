@@ -42,11 +42,11 @@
               <li class="nav-item px-2" >
                 <router-link to="/profile"  class="nav-link active">My Profile</router-link>
               </li> -->
-              <li class="nav-item" v-if="login">
+              <li class="nav-item mx-2 my-1" v-if="login">
                 <router-link to="/createpost" class="btn btn-primary" >Post Now</router-link>
               </li>
               <li>
-              <div class="dropdown mx-3 me-5" v-if="login">
+              <div class="dropdown mx-2 my-1 me-5" v-if="login">
                 <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                  Welcome
                 </button>
@@ -56,7 +56,7 @@
                 <li><router-link class="dropdown-item" to="/myprofile"><i class="bi bi-person-circle"></i> My Profile</router-link></li>
                 <li><router-link class="dropdown-item" to="/myposts"><i class="bi bi-card-text" fill="red"></i> My Posts</router-link></li>
                 <div class="dropdown-divider"></div>
-                <li><router-link class="dropdown-item" to="/"><i class="bi bi-box-arrow-right"></i> Logout</router-link></li>
+                <li><router-link class="dropdown-item" @click="logout()" to="/login"><i class="bi bi-box-arrow-right"></i> Logout</router-link></li>
                 </ul>
               </div>
               
@@ -87,9 +87,15 @@
 
 <script>
 export default {
+  props:['login'],
   data(){
     return{
-          login:true,
+          
+    }
+  },
+  methods:{
+    logout(){
+      localStorage.removeItem('auth_token')
     }
   }
 
