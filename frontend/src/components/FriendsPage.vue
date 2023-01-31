@@ -41,7 +41,11 @@
                 <tbody>
                 <tr class="table mx-3" v-for="(followers,index) in followerslist" :key="index">
                     <th  class="text-center" scope="row">{{index+1  }}</th>
-                    <td colspan="5" class="fs-5 text-center"  style="word-wrap: break-word;min-width: 160px;max-width: 160px;">@{{followers.username}}</td>
+                    <td colspan="5" class="fs-5 text-center"  style="word-wrap: break-word;min-width: 160px;max-width: 160px;">
+                        <router-link :to="`/userprofile/${followers.username}`" style="color:darkblue; text-decoration: none;">
+                            @{{followers.username}}
+                        </router-link>
+                       </td>
                     <td class="text-center">
                         <button  :class="{
                             'btn btn-success mx-3 mt-1': !followers.following,
@@ -68,7 +72,11 @@
                 <tbody>
                 <tr class="table" v-for="(item,index) in followinglist" :key="index">
                     <td  class="text-center" scope="row">{{ index+1 }}</td>
-                    <td colspan="5" class="fs-5 text-center">@{{item.username}}</td>
+                    <td colspan="5" class="fs-5 text-center">
+                        <router-link :to="`/userprofile/${item.username}`" style="color:darkblue; text-decoration: none;">
+                            @{{item.username}}
+                        </router-link>
+                       </td>
                     <td class="text-center">
                         <button  class="btn btn-danger mt-1" @click="following_unfollow(item.username)">Unfollow</button>                      
                     </td>

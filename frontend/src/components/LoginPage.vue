@@ -67,7 +67,7 @@
                   }).then((res)=> {
                       console.log(res);
                       if (res.meta.code == 200){
-                        console.log(res.response.user.authentication_token);
+                        console.log(res);
                         localStorage.setItem('auth_token', res.response.user.authentication_token);
                         this.$router.push({name:'home'})
                       }

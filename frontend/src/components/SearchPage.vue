@@ -24,7 +24,13 @@
             <tbody>
                 <tr class="table mx-3" v-for="(user,index) in search_list" :key="index">
                     <th  class="text-center" scope="row">{{index+1  }}</th>
-                    <td colspan="5" class="fs-5 text-center"  style="word-wrap: break-word;min-width: 160px;max-width: 160px;">@{{user.username}}</td>
+            
+                        <td colspan="5" class="fs-5 text-center"  style="word-wrap: break-word;min-width: 160px;max-width: 160px;">
+                               <router-link :to="`/userprofile/${user.username}`" style="color:darkblue; text-decoration: none;">
+                                      @{{user.username}}
+                               </router-link>
+                        </td>
+                 
                     <td class="text-center">
                         <button  :class="{
                             'btn btn-success mx-3 mt-1': !user.following,

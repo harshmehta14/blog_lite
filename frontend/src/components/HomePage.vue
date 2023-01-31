@@ -76,7 +76,7 @@
 
     <div class="col-sm-8 " >
       <div class="container text-center my-4">
-        <h1 class="display-4 alert alert-success">Welcome</h1>
+        <h1 class="display-4 alert alert-success">Welcome {{ (username).toUpperCase().slice(0,1) + (username).toLowerCase().slice(1) }}</h1>
       </div>
       <!-- <div class="container my-3 ">
           <nav class="nav nav-pills nav-justified ">
@@ -116,13 +116,13 @@
                 <div class="card-body ">
                   
                 <router-link to="/myprofile" style="text-decoration:none; color:inherit;">
-                  <p class="card-text blockquote">{{ blog.description.slice(0,100) }}...</p>
+                  <p class="card-text blockquote">{{ blog.description }}</p>
                 </router-link>
 
                   <div class="row align-items-center">  
                    
                  <div class="col-md-6">
-                  <router-link to="/userprofile" style="color:darkblue; text-decoration: none;">
+                  <router-link :to="`/userprofile/${blog.posted_by}`" style="color:darkblue; text-decoration: none;">
                   <h5 class="card-text">Posted By: @{{ blog.posted_by}}</h5>
                   </router-link>
                  </div>
@@ -138,6 +138,10 @@
                  
                   <div class="col">
                       <p class="card-text fs-5"><small class="text-muted">{{ blog.posted_on.slice(0,-7)}}</small></p>
+                    </div>
+                    
+                    <div class="col">
+                      <p class="card-text fs-5"> Additional Links: {{ blog.links}}</p>
                     </div>
                 </div>
               </div>
@@ -156,19 +160,19 @@
           
           <li class="list-group-item">
             <div class="card-body">
-              <router-link to="/userprofile" style="color:inherit; text-decoration: none;">
+              <router-link :to="`/userprofile/${blog.posted_by}`" style="color:inherit; text-decoration: none;">
               <!-- <div style="display: flex; justify-content: space-between;"> -->
-               <router-link to="/myprofile" style="color:darkblue; text-decoration: none;">
+               <router-link :to="`/userprofile/${blog.posted_by}`" style="color:darkblue; text-decoration: none;">
                 <h5 class="card-title">@{{ blog.posted_by }}</h5>
                </router-link> 
                 
                 
             
               <h4 class="card-subtitle" >{{blog.title}}</h4>
-              <p class="card-text mt-2">{{ blog.description.slice(0,100)}}..</p>
+              <p class="card-text mt-2">{{ blog.description}}</p>
             </router-link>
           
-              <div class="row align-items-center">
+              <div class="row align-items-center mt-2">
                 <div class="col-md-6">
                   <button class="btn btn-light fs-5" @click="blog_like(blog.blog_id)">
                       {{ blog.likes }} &nbsp; 
@@ -180,6 +184,10 @@
                 </div>
 
               </div>
+
+              <div class="col mt-2">
+                      <p class="card-text fs-5"><small class="text-muted">Additional Links: {{ blog.links}}</small> </p>
+                    </div>
                
 
                 
@@ -209,6 +217,7 @@ export default {
     user_blogs:[],
     trendingblogs:[],
     login_flag:false,
+    username:"",
 
   }
   },
@@ -293,11 +302,13 @@ export default {
         return response.json()
       }).then((blogspost) => {
         // console.log(blogspost)
-          if (blogspost.length == 0){
+        this.username = blogspost.username;
+        // console.log(blogspost.posts)
+          if (blogspost.posts.length == 0){
             this.no_friend=true;
           }
           else{
-           blogspost.forEach(item => this.user_blogs.push(item));
+           blogspost.posts.forEach(item => this.user_blogs.push(item));
           } 
       }).catch(function(error){
           console.log('error',error)
@@ -316,7 +327,8 @@ export default {
         return response.json()
       }).then((trendingblogs) => {
           // console.log(trendingblogs)
-          trendingblogs.forEach(item => this.trendingblogs.push(item));
+          // this.username = trendingblogs.username
+          trendingblogs.posts.forEach(item => this.trendingblogs.push(item));
       }).catch(function(error){
           console.log('error',error)
       });

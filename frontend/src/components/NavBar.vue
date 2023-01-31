@@ -23,7 +23,7 @@
 </nav> -->
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand me-5" href="/"><h6 class="display-6">Project</h6></a>
+          <a class="navbar-brand me-5 ms-5" href="/"><h6 class="display-6">Blog Lite</h6></a>
       
           
           <!-- <form class="d-flex" role="search">

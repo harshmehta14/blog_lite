@@ -2,7 +2,7 @@
     <div>
         <NavBar  v-bind:login=true />
         <div class="container my-3">
-            <form @submit.prevent="createpost">
+            <form @submit.prevent="updatepost">
                 <div class="title my-3 shadow p-3 mb-5 bg-body rounded">
                     <textarea type="text" class="form-control" rows="1" id="title" placeholder="Type in title for the Post here..."  v-model="title"  required />
                 </div>
@@ -21,7 +21,7 @@
                 </div>
   
                 <div class="additionallinks my-4 shadow p-3 mb-5 bg-body rounded">
-                    <textarea type="text" rows="1" class="form-control" id="additionallinks" placeholder="Add links here (seperated by comma) ..."  v-model="additionallinks"  />
+                    <textarea type="text" rows="1" class="form-control" id="additionallinks" placeholder="Add links here (seperated by comma) ..."  v-model="links"  />
                 </div>
   
                 
@@ -35,8 +35,7 @@
                     Please enter all the field before posting
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button class="btn btn-success btn-lg" @click="checkallfield">Post <i class="bi bi-check2-circle"></i></button>
-  
+                    <button class="btn btn-success btn-lg" @click="checkallfield">Update Post <i class="bi bi-check2-circle"></i></button>
                 </div>
               
   
@@ -57,7 +56,7 @@
         title:"",
         pimage:null,
         description:"",
-        additionallinks:"",
+        links:"",
         check:false,
     }
   },
@@ -68,7 +67,7 @@
     },
     checkallfield(){
         if (this.title=="" || this.pimage==null || this.description==""){
-            console.log("hello")
+           
             this.check=true;
         }
         else{
@@ -88,10 +87,35 @@
         }
     },
   
-    createpost(){
-        console.log("IN here")
+    
+    editblogdata(id){
+        console.log(id)
+        fetch(
+              "http://127.0.0.1:5000/editblogdata?id="+id,
+              {
+              method: "GET",
+              headers:{
+                "Authentication-Token":localStorage.getItem("auth_token"),
+                  "Content-Type":"application/json",
+                  "Access-Control-Allow-Origin": "*",
+              },
+            }).then(function(response) {
+              return response.json()
+            }).then((res) => {
+                // console.log(res.private_public)
+                this.title = res.title
+                this.private_public = res.private_public
+                this.description = res.description
+                this.links = res.links
+          
+            }).catch(function(error){
+                console.log('error',error)
+            });
+    },
+
+    updatepost(){
           fetch(
-              "http://127.0.0.1:5000/crud_user_post",
+              "http://127.0.0.1:5000/updatepost",
               {
               method: "POST",
               headers:{
@@ -102,24 +126,29 @@
               body: JSON.stringify({
               "title":this.title,
               "description": this.description,
-              "links": this.additionallinks,
+              "links": this.links,
               "private_public":this.private_public,
+              "blog_id":this.$route.params.data
+              
             }),
             }).then(function(response) {
               return response.json()
             }).then((res) => {
                 // console.log(rdata)
                 if (res.status){
-                    this.$router.push({name:'mypost'})
+                    this.$router.push({name:'myposts'})
                 }
                 else{
                     console.log(res.error)
                 }
-          
             }).catch(function(error){
                 console.log('error',error)
             });
     }
+
+  },
+  mounted(){
+    this.editblogdata(this.$route.params.data);
   }
   }
   </script>

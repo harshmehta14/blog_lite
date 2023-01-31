@@ -12,6 +12,7 @@ from jobs.mail import send_email
 from jobs import workers
 from jobs import tasks
 import pandas as pd
+from requests_toolbelt.multipart import decoder
 
 app=None
 api=None
@@ -151,6 +152,7 @@ def send_blogcsv():
 
 
 
+
 #_____________________MY PROFILE _________________________
 #givies information about any username supplied to it
 #login required
@@ -176,6 +178,37 @@ def profile():
 
 #_____________________MY PROFILE END _________________________
 
+  
+
+#______________________________USER PROFILE_________________________________________
+
+@app.route('/userprofile',methods=['GET'])
+@auth_required('token')
+def userprofile():
+  try:
+    username_profile =request.args['username']
+    user = User.query.filter_by(username= username_profile).first()
+    
+    user_posts = blogpost.query.filter_by(posted_by=username_profile).all()
+    print(user)
+    posts=[]
+    for blog in user_posts:
+      if blog.private_public == 0:
+        posts.append({"blog_id":blog.id,
+                      "title":blog.title,
+                      "description":blog.description,
+                      "posted_on":blog.posted_on,
+                      "likes":blog.likes,
+                      "posted_by":blog.posted_by,
+                      "links":blog.links,})
+
+    return jsonify({"posts":posts,"profile":True,'followers':user.total_followers,'following':user.total_following,'total_posts':user.total_post}),200
+  except Exception as e:
+    return jsonify({"profile":False})
+
+
+
+#______________________________USER PROFILE END_________________________________________
 
 
 
@@ -256,7 +289,7 @@ def getblogs():
 
     blogs = blogpost.query.filter_by(private_public="0").order_by(query).all()
     # print(blogs)
-
+    username = current_user.username
     for blog in blogs:
       if blog.posted_by in user_following_list:
         posts.append({"blog_id":blog.id,
@@ -268,9 +301,9 @@ def getblogs():
                       "links":blog.links,
                       "imgurl":blog.imgurl,
                       "private_public":blog.private_public,})
-        
+      
     # print(posts)
-    return posts
+    return ({"posts":posts,"username":username})
     # return jsonify({'total_posts':user.total_post,"followers": user.followers,'following':user.following,'email':user.email,"last_login":user.last_login,"username":user.username}),200
   except Exception as e:
     return jsonify([])
@@ -283,7 +316,7 @@ def getblogs():
 def gettrendingblogs():
   try:
     posts=[]
- 
+     
     blogs = blogpost.query.filter_by(private_public="0").order_by(blogpost.likes.desc()).all()
     # print(blogs[0:5])
     for blog in blogs[0:5]:
@@ -296,7 +329,7 @@ def gettrendingblogs():
                     "posted_by":blog.posted_by,
                     "links":blog.links,
                     "imgurl":blog.imgurl,})
-    return jsonify(posts)
+    return jsonify({"posts":posts})
     # return jsonify({'total_posts':user.total_post,"followers": user.followers,'following':user.following,'email':user.email,"last_login":user.last_login,"username":user.username}),200
   except Exception as e:
     return make_response(e, 403)
@@ -313,6 +346,56 @@ def like_post():
   except Exception as e:
     return jsonify({"liked":"fail"})
 # ______________________________HOME PAGE END__________________________________________
+
+
+
+
+
+
+
+#__________________USERS POST_______________________
+
+@app.route('/editblogdata',methods=['GET'])
+@auth_required('token')
+def editblogdata():
+  try:
+    id = request.args['id']
+    blog = blogpost.query.filter_by(id = id).first()
+    print(id)
+    return jsonify({"title":blog.title,
+                    "description":blog.description,
+                    "links":blog.links,
+                    "private_public":blog.private_public})
+  except Exception as e:
+      return make_response(e, 403)
+
+
+@app.route('/updatepost',methods=['POST'])
+@auth_required('token')
+def updatepost():
+  try:
+    data = request.json
+    title = data['title']
+    description= data['description']
+    posted_by = current_user.username
+    links = data['links']
+    private_public = data['private_public']
+    blog_id = data['blog_id']
+
+    blog = blogpost.query.filter_by(id =blog_id).first()
+    blog.title = title
+    blog.description = description
+    blog.links = links
+    blog.private_public = private_public
+    db.session.commit()
+    return jsonify({"status":True})
+  except Exception as e:
+    return jsonify({"status":False,"error":e})
+  
+
+
+      
+#__________________USERS POST END_______________________
 
 
 
@@ -397,6 +480,8 @@ def crud_user_post():
       return jsonify({'status':False,"error":e})
 
 
+
+
 @app.route('/createpost',methods=['POST'])
 @auth_required('token')
 def createpost():
@@ -407,6 +492,7 @@ def createpost():
     posted_by = current_user.username
     links = data['links']
     private_public = data['private_public']
+    # print(data['file'])
     # print("In createpost",private_public)
     post = blogpost(
                 title=title,
@@ -537,6 +623,26 @@ def unfollow_user():
 
 
 #_______________________FRIEND PAGE END___________________________________
+
+@app.route("/getchartdata",methods=['GET',"POST"])
+def getchartdata():
+  username = current_user.username
+  print(username)
+  user_post = blogpost.query.filter_by(posted_by=username).all()
+  last_five_days =[0,0,0,0,0]
+  name_five_days=[]
+
+  for post in user_post:
+    d=post.posted_on
+    
+  date_today = datetime.datetime.now() 
+  for i in range (0,5):
+    tom = date_today - datetime.timedelta(days=i)
+    name_five_days.append(tom.strftime('%A'))
+  
+  print(name_five_days[::-1])
+  
+  return ({"label":name_five_days,'data':last_five_days})
 
 
 if __name__=="__main__":

@@ -52,11 +52,14 @@
             </div> 
         </div>
         <h1 class="display-3 text-center">My Profile</h1>
-        <div class="container-fluid bcontent shadow-lg p-3 mb-5 bg-body rounded" >
+        <div class="container-fluid bcontent shadow-lg p-3 mb-5 bg-body rounded " >
         <div class="card border-0">
             <div class="row no-gutters">
-                <div class="col-sm-5">
-                    <img class="card-img" src="../assets/loginpage.svg" style="padding:10px 10px" alt="">
+                <div class="col-sm-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                    </svg>
                 </div>
                 <div class="col-sm-7"> 
                     <div class="card-body">
@@ -68,16 +71,22 @@
                         <hr>
                         <p class="card-title"><span style="font-weight:bold">Email: </span> {{email}}</p>
                         <hr>
-                        <p class="card-title"><span style="font-weight:bold">Last Login: </span>{{last_login}}</p>
-                        <hr>
+                        <!-- <p class="card-title"><span style="font-weight:bold">Last Login: </span>{{last_login}}</p>
+                        <hr> -->
                         <!-- <p class="card-text">Suresh Dasari is a founder and technical lead developer in tutlane.</p> -->
                         <!-- <a href="#" class="btn btn-primary">View Profile</a> -->
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        
+        
+    </div>
+    <h1 class="display-4 text-center mt-5">Insights - My Posts</h1>
+        <div class="container my-5">
+            <chart ></chart>
+        </div>
     
 
 
@@ -86,7 +95,9 @@
 </template>
 
 <script>
+import chart from './chartComponent.vue';
 export default {
+  components: { chart },
     data(){
         return{
             total_posts:0,
@@ -99,7 +110,7 @@ export default {
     },
     methods:{
         profile() {
-        console.log("Get profile");
+    
           fetch(
               "http://127.0.0.1:5000/profile",
               {

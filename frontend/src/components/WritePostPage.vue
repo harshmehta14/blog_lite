@@ -13,7 +13,7 @@
                     </div>
                     <br/>
     
-                    <input class="form-control form-control-sm" id="formFileSm" ref="fileInput" @input="pickFile" type="file" required>
+                    <input class="form-control form-control-sm" id="formFileSm" ref="fileInput" @input="pickFile" type="file" v-on:change="onFileChange()" required>
                 </div>
 
                 <div class="subtitle my-4 shadow p-3 mb-5 bg-body rounded">
@@ -59,6 +59,7 @@ data(){
         description:"",
         additionallinks:"",
         check:false,
+
     }
 },
 methods:{
@@ -87,9 +88,18 @@ methods:{
             this.$emit('input',file[0])
         }
     },
+    
 
     createpost(){
         console.log("IN here")
+        // var input = document.querySelector('input[type="file"]')
+
+        // console.log(input.files[0])
+
+        // var data = new FormData()
+        // data.append('file', input.files[0])
+        // data.append('user', 'hubot')
+
           fetch(
               "http://127.0.0.1:5000/createpost",
               {
@@ -104,6 +114,7 @@ methods:{
               "description": this.description,
               "links": this.additionallinks,
               "private_public":this.private_public,
+              "image":this.data
             }),
             }).then(function(response) {
               return response.json()

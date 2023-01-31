@@ -43,7 +43,7 @@ const routes = [
     },
     {
         path:'/myposts',
-        name:'mypost',
+        name:'myposts',
         component:MyPostPage  
     },
     {
@@ -52,12 +52,12 @@ const routes = [
         component:SearchPage
     },
     {
-        path:'/userprofile',
+        path:'/userprofile/:username',
         name:'userprofile',
         component:UserProfile
     },
     {
-        path:'/editpost',
+        path:'/editpost/:data',
         name:'editpost',
         component:EditPost
     }

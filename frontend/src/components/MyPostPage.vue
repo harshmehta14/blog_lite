@@ -47,7 +47,7 @@
                     </div>
                   
                     <div class="footer">
-                      <router-link to="editpost" class="btn btn-info mx-4">
+                      <router-link :to="`editpost/${blog.blog_id}`" class="btn btn-info mx-4">
                         <i class="bi bi-pencil-fill"></i> Edit
                       </router-link>
                     <a href="#" class="btn btn-outline-danger" @click="Delete_userpost(blog.blog_id)"><i class="bi bi-trash3-fill"></i> Delete</a>
