@@ -120,11 +120,12 @@ export default {
             }).then((user_data) => { 
                 if(user_data.profile){
                 this.total_posts=user_data.total_posts;
-                // this.followers=user_data.followers.length;
-                // this.following=user_data.following.length;
+                this.followers=user_data.followers;
+                this.following=user_data.following;
                 this.profile_username=user_data.username;
                 this.email=user_data.email;
                 this.last_login=user_data.last_login;
+              
                 }
                 else{
                     console.log(user_data)

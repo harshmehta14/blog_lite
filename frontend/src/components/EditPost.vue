@@ -15,15 +15,15 @@
     
                     <input class="form-control form-control-sm" id="formFileSm" ref="fileInput" @input="pickFile" type="file" required>
                 </div>
-
+  
                 <div class="subtitle my-4 shadow p-3 mb-5 bg-body rounded">
                     <textarea type="text" rows="10" class="form-control" id="subtitle" placeholder="Start typing you story here..."  v-model="description"  required />
                 </div>
-
+  
                 <div class="additionallinks my-4 shadow p-3 mb-5 bg-body rounded">
                     <textarea type="text" rows="1" class="form-control" id="additionallinks" placeholder="Add links here (seperated by comma) ..."  v-model="additionallinks"  />
                 </div>
-
+  
                 
                 <div class="form-check form-switch my-4">
                     <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked" checked v-model="private_public" >
@@ -36,22 +36,22 @@
                 </div>
                 <div class="d-flex justify-content-center">
                     <button class="btn btn-success btn-lg" @click="checkallfield">Post <i class="bi bi-check2-circle"></i></button>
-
+  
                 </div>
               
-
+  
             </form>
             
         </div>
         
-
+  
     </div>
-</template>
-
-<script>
-
-export default {
-data(){
+  </template>
+  
+  <script>
+  
+  export default {
+  data(){
     return{
         private_public:false,
         title:"",
@@ -60,11 +60,11 @@ data(){
         additionallinks:"",
         check:false,
     }
-},
-methods:{
+  },
+  methods:{
     selectImage(){
         this.$refs.fileInput.click()
-
+  
     },
     checkallfield(){
         if (this.title=="" || this.pimage==null || this.description==""){
@@ -87,11 +87,11 @@ methods:{
             this.$emit('input',file[0])
         }
     },
-
+  
     createpost(){
         console.log("IN here")
           fetch(
-              "http://127.0.0.1:5000/createpost",
+              "http://127.0.0.1:5000/crud_user_post",
               {
               method: "POST",
               headers:{
@@ -110,7 +110,7 @@ methods:{
             }).then((res) => {
                 // console.log(rdata)
                 if (res.status){
-                    this.$router.push({name:'home'})
+                    this.$router.push({name:'mypost'})
                 }
                 else{
                     console.log(res.error)
@@ -120,12 +120,12 @@ methods:{
                 console.log('error',error)
             });
     }
-}
-}
-</script>
-
-<style scoped>
-.viewingimage{
+  }
+  }
+  </script>
+  
+  <style scoped>
+  .viewingimage{
     width: 100%;
     height: 300px;
     display: block;
@@ -135,8 +135,8 @@ methods:{
     background-size: cover;
     background-position: center center;
    
-}
-textarea[id=title] {
+  }
+  textarea[id=title] {
     background-color: none;
     border: none;
     /* color: white; */
@@ -149,8 +149,8 @@ textarea[id=title] {
     /* width: 100% ; */
     /* height:10%; */
     text-align: center;
-}
-textarea[id=subtitle]{
+  }
+  textarea[id=subtitle]{
     background-color: none;
     border: none;
     /* color: white; */
@@ -161,9 +161,9 @@ textarea[id=subtitle]{
     cursor: pointer;
     /* width: 100% ; */
     height:100%;
-}
-
-textarea[id=additionallinks] {
+  }
+  
+  textarea[id=additionallinks] {
     background-color: none;
     border: none;
     /* color: white; */
@@ -174,6 +174,6 @@ textarea[id=additionallinks] {
     cursor: pointer;
     /* width: 100% ; */
     height:100%;
-}
-
-</style>
+  }
+  
+  </style>

@@ -1,7 +1,16 @@
 <template>
   <div>
     <NavBar  v-bind:login=true />
-    <h1 class="display-3 text-center mt-3">My Posts</h1>
+
+    
+      <div class="row my-5">
+        <div class="col-md-10">
+          <h1 class="display-3 text-center ">My Posts</h1>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-success mt-4" @click="export_blog()" >Export Blogs</button>
+        </div>
+      </div>
 
     <div class="container" v-if="empty_post">
       <h1 class="display-4 mt-5 mx-5 text-center">You have no posts</h1>
@@ -66,6 +75,25 @@ export default {
   }
  },
  methods:{
+  export_blog(){
+    fetch(
+        "http://127.0.0.1:5000/send_blogcsv",
+        {
+        method: "GET",
+        headers:{
+            "Authentication-Token": localStorage.getItem("auth_token"),
+            "Content-Type":"application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+      }).then(function(response) {
+        return response.json()
+      }).then((res) => { 
+         alert(res.status)
+      }).catch(function(error){
+          console.log('error',error)
+      });
+  },
+
   Get_userpost(){
       fetch(
         "http://127.0.0.1:5000/crud_user_post",
@@ -86,9 +114,7 @@ export default {
           else{
             this.empty_post=false
             myblogs.forEach(item => this.myblogs.push(item));
-          }
-        
-          
+          } 
       }).catch(function(error){
           console.log('error',error)
       });

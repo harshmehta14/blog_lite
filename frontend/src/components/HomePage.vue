@@ -76,7 +76,7 @@
 
     <div class="col-sm-8 " >
       <div class="container text-center my-4">
-        <h1 class="display-4">Welcome </h1>
+        <h1 class="display-4 alert alert-success">Welcome</h1>
       </div>
       <!-- <div class="container my-3 ">
           <nav class="nav nav-pills nav-justified ">

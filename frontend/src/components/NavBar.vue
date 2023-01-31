@@ -24,10 +24,11 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand me-5" href="/"><h6 class="display-6">Project</h6></a>
+      
           
           <!-- <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="username">
-             <router-link to="/search/"><button class="btn btn-outline-success" >Search</button></router-link>   
+             <router-link to="/search/"><button class="btn btn-outline-success" @click="gotosearchpage" >Search</button></router-link>   
           </form> -->
 
    
@@ -66,10 +67,10 @@
               </div>
               
               </li>
-              <li class="nav-item px-2" v-if="!login">
+              <li class="nav-item px-2 mt-1" v-if="!login">
                 <router-link to="/login" class="btn btn-success" >Login</router-link>
               </li>
-              <li class="nav-item px-2 me-3" v-if="!login">
+              <li class="nav-item px-2 me-3 mt-1" v-if="!login">
                 <router-link to="/signup" class="btn btn-outline-primary" >Signup</router-link>
               </li>
               
@@ -95,11 +96,15 @@ export default {
   props:['login'],
   data(){
     return{
-      username:"harsh",
+      username:"",
           
     }
   },
   methods:{
+    gotosearchpage(){
+      console.log(this.username)
+      this.$router.push({name: "search", params:{id : this.username} })
+    },
     logout(){
       localStorage.removeItem('auth_token')
     }
