@@ -3,14 +3,19 @@ from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
-from models import *
+from data.models import *
 import datetime
 from flask_security import Security, SQLAlchemySessionUserDatastore, hash_password, auth_required, current_user
 from config import LocalDevelopmentConfig
 
+from jobs.mail import send_email
+from jobs import workers
+from jobs import tasks
+import pandas as pd
 
 app=None
 api=None
+celery = None
 
 def create_app():
   app = Flask(__name__)
@@ -22,21 +27,40 @@ def create_app():
   security = Security(app, user_datastore)
   api = Api(app)
   app.app_context().push()
+
+  celery = workers.celery
+  celery.conf.update(
+    broker_url = app.config["CELERY_BROKER_URL"],
+    result_backend= app.config["CELERY_RESULT_BACKEND"] 
+  )
+  celery.Task = workers.ContextTask
+  app.app_context().push()
   with app.app_context():
     db.create_all()
-  return app, api
+  return app, api,celery
   # return app
 
-app,api = create_app()
+app,api,celery = create_app()
 
-
-# from controller import *
-
-from api import *
+from controller.api import *
 api.add_resource(UserAPI,"/api/user","/api/user/<username>")
 
-# app= create_app()
 
+@app.route("/sendemail",methods=["GET"])
+def sendemail():
+  
+  a = send_email("test@bloglite.com",subject="Hi there", message = "Welcome to BlogLite")
+  
+  return str(a),200
+
+
+# celery -A main.celery worker -l info   /// TO RUN CELERY WORKERS
+# celery -A main.celery beat --max-interval 1 -l info
+
+   
+   
+
+  
 # @app.route('/')
 # @auth_required('token')
 # def home():
@@ -84,6 +108,49 @@ api.add_resource(UserAPI,"/api/user","/api/user/<username>")
 #     return jsonify({"signup":e})
 
 
+#______________________ EMAIL-BLOGS CELERY-USER-TRIGGERED________________
+
+@app.route("/send_blogcsv",methods=["GET"])
+@auth_required('token')
+def send_blogcsv():
+  try:
+    user_email = current_user.email
+    user_name =  current_user.username
+    user_blogs = blogpost.query.filter_by(posted_by = user_name).all()
+
+    title_list=[]
+    description_list=[]
+    posted_on_list=[]
+    imgurl_list=[]
+    like_list=[]
+    private_list=[]
+    links_list=[]
+    for blog in user_blogs:
+      title_list.append(blog.title)
+      description_list.append(blog.description)
+      posted_on_list.append(blog.posted_on)
+      imgurl_list.append(blog.imgurl)
+      like_list.append(blog.likes)
+      private_list.append(blog.private_public)
+      links_list.append(blog.links)
+
+    dict = {'Title': title_list, 'Description':description_list , 'posted_on':posted_on_list ,'imgurl':imgurl_list,"like":like_list,"Private":private_list,"links":links_list} 
+    df = pd.DataFrame(dict)
+    df.to_csv('./static/'+user_name+"_blogs.csv", encoding='utf-8')
+
+    tasks.send_blog_csv(user_name,user_email)
+    # job = tasks.send_blog_csv.apply_async((user_name,user_email),countdown = 10)
+    # result = job.get()
+    # print(result)
+    return ({"status":"An email has been sent to your registered email with all your Blog Details"})
+  except Exception as e:
+    return ({"status":"Failed to Send email, try again later"})
+
+#______________________ EMAIL-BLOGS CELERY-USER-TRIGGERED END________________
+
+
+
+
 #_____________________MY PROFILE _________________________
 #givies information about any username supplied to it
 #login required
@@ -100,7 +167,7 @@ def profile():
     last_login = "" if user.last_login == None else user.last_login
 
     # print(user.last_login)
-    return jsonify({"profile":True,'total_posts':user.total_post,'email':user.email,"last_login":last_login,"username":user.username}),200
+    return jsonify({"profile":True,'followers':user.total_followers,'following':user.total_following,'total_posts':user.total_post,'email':user.email,"last_login":last_login,"username":user.username}),200
   except Exception as e:
     return jsonify({"profile":False})
   
@@ -108,6 +175,58 @@ def profile():
 # login required
 
 #_____________________MY PROFILE END _________________________
+
+
+
+
+#_________________SEARCH RESULTS____________________
+
+
+@app.route('/search_user',methods=['GET'])
+@auth_required('token')
+def search_user():
+  try:
+    user_id = current_user.id
+    # user_follower =  Followers.query.filter_by(followers=user_id).all()
+    user_following =  Followers.query.filter_by(followers=user_id).all()
+
+    username_like = request.args['username']
+    username_list = User.query.filter(User.username.like(username_like+"%")).all()
+    # print(username_list)
+    
+    user_following_list=[]
+    for f in user_following:
+      user_following_list.append(f.following)
+    # print("Follower_list",user_following_list)
+  
+    user_following_dict =[]
+    for i in username_list:
+      if i.id in user_following_list and i.id!=user_id:
+        user_following_dict.append({"username":i.username,"following":True})
+      elif i.id!=user_id:
+        user_following_dict.append({"username":i.username,"following":False})
+    
+    print(user_following_dict)
+    # user_followers_dict =[]
+    # two_way = list(set(user_follower_list).intersection(user_following_list))
+    # # print(two_way)
+    # for user in user_follower_list:
+    #   if user in two_way:
+    #     user_followers_dict.append({"username":user,"following":True})
+    #   else:
+    #     user_followers_dict.append({"username":user,"following":False})
+
+
+    # print("Followers",user_followers_dict)
+    return jsonify(user_following_dict)
+   
+  except Exception as e:
+    return make_response(e, 403)
+
+
+#_________________SEARCH RESULTS END ____________________
+
+
 
 
 # ______________________________HOME PAGE __________________________________________
@@ -197,13 +316,12 @@ def like_post():
 
 
 
-
 #________________________________MY POST ____________________________________________
 
 
     
 # give out blogs of a particular user
-@app.route('/crud_user_post',methods=['GET','DELETE'])
+@app.route('/crud_user_post',methods=['GET','DELETE',"POST"])
 @auth_required('token')
 def crud_user_post():
   username = current_user.username
@@ -245,6 +363,38 @@ def crud_user_post():
     except Exception as e:
       print(e)
       return jsonify({"delete":"fail"})
+  
+  elif request.method =="POST":
+    try:
+      data = request.json
+      title = data['title']
+      description= data['description']
+      posted_by = current_user.username
+      links = data['links']
+      private_public = data['private_public']
+      blog_id = data['blog_id']
+      
+      # post = blogpost(
+      #             title=title,
+      #             description=description,
+      #             posted_on=datetime.datetime.now(),
+      #             posted_by=posted_by,
+      #             links=links,
+      #             private_public=private_public)
+      blog_updated = blogpost.query.filter_by(id=blog_id).update(dict(title=title,
+                                                                  description=description,
+                                                                  posted_on=datetime.datetime.now(),
+                                                                  posted_by=posted_by,
+                                                                  links=links,
+                                                                  private_public=private_public))
+      
+      db.session.commit()
+      user = User.query.filter_by(username=current_user.username).first()
+      user.total_post +=1
+      db.session.commit()
+      return jsonify({'status':True}),200
+    except Exception as e:
+      return jsonify({'status':False,"error":e})
 
 
 @app.route('/createpost',methods=['POST'])

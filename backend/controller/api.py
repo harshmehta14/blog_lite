@@ -1,5 +1,5 @@
 from flask_restful import Resource, marshal_with, fields
-from models import *
+from data.models import *
 from flask_security import auth_required
 
 
